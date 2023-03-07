@@ -16,3 +16,66 @@ img {
   display: block;
   max-width: 100%;
 }
+
+.timer {
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+  font-size: 2rem;
+  color: #333;
+  background-color: #ece4e4;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  margin-top: 10px;
+}
+
+.label {
+  font-size: 1rem;
+
+  text-align: center;
+  padding: 5px;
+  color: floralwhite;
+  background-color: rgb(63, 56, 56);
+  border-radius: 10px;
+}
+
+.value {
+  width: auto;
+  padding: 7px;
+  color: floralwhite;
+  background-color: rgb(243, 182, 162);
+  text-align: center;
+  border-radius: 10px;
+}
+.field {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  margin-right: 15px;
+}
+
+.field:last-child {
+  margin-right: 0;
+}
+
+.flatpickr-input {
+  color: rgb(58, 58, 60);
+  text-align: center;
+  background-color: rgb(209, 183, 164);
+  border: transparent;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+button[data-start] {
+  padding: 5px;
+  color: rgb(58, 58, 60);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
