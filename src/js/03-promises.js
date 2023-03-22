@@ -2,38 +2,92 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const form = document.querySelector('.form');
 
-function createPromise(position, delay) {
+function createPromise(position, delay, shouldResolve) {
   return new Promise((resolve, reject) => {
-    const shouldResolve = Math.random() > 0.3;
-    if (shouldResolve) {
-      setTimeout(() => {
+    setTimeout(() => {
+      if (shouldResolve) {
         resolve({ position, delay });
-      }, delay);
-    } else {
-      setTimeout(() => {
+      } else {
         reject({ position, delay });
-      }, delay);
-    }
+      }
+    }, delay);
   });
 }
 
-form.addEventListener('submit', event => {
+form.addEventListener('submit', onFormSubmit);
+
+function onFormSubmit(event) {
   event.preventDefault();
 
-  const delay = form.elements.delay.value;
-  const step = form.elements.step.value;
-  const amount = form.elements.amount.value;
+  const { delay, step, amount } = event.target.elements;
+  const delayValue = Number(delay.value);
+  const stepValue = Number(step.value);
 
-  for (let i = 0; i < amount; i += 1) {
-    const position = i + 1;
-    const promiceDelay = delay + step * i;
+  if (delayValue < 1 || stepValue < 1 || amount.value < 1) {
+    Notify.failure(`All fields must be more than zero`);
+  }
 
-    createPromise(position, promiceDelay)
-      .then(({ position, delay }) => {
+  const promises = [];
+  for (let i = 1; i <= amount.value; i += 1) {
+    const shouldResolve = Math.random() > 0.3;
+    promises.push(createPromise(i, delayValue, shouldResolve));
+  }
+
+  Promise.all(promises)
+    .then(results => {
+      results.forEach(({ position, delay }) => {
         Notify.success(`Fulfilled promise ${position} in ${delay}ms`);
-      })
-      .catch(({ position, delay }) => {
+      });
+    })
+    .catch(results => {
+      results.forEach(({ position, delay }) => {
         Notify.failure(`Rejected promise ${position} in ${delay}ms`);
       });
-  }
-});
+    });
+
+  event.currentTarget.reset();
+}
+
+// let timeId = null;
+
+// function createPromise(position, delay) {
+//   const shouldResolve = Math.random() > 0.3;
+
+//   return new Promise((resolve, reject) => {
+//     timeId = setTimeout(() => {
+//       if (shouldResolve) {
+//         resolve({ position, delay });
+//       } else {
+//         reject({ position, delay });
+//       }
+//     }, delay);
+//   });
+// }
+
+// form.addEventListener('submit', onFormSubmit);
+
+// function onFormSubmit(event) {
+//   event.preventDefault();
+//   clearTimeout(timeId);
+
+//   const { delay, step, amount } = event.target.elements;
+//   let stepValue = Number(delay.value);
+
+//   if (delay.value < 1 || step.value < 1 || amount.value < 1) {
+//     Notify.failure(`All fields must be more than zero`);
+//     return;
+//   }
+
+//   for (let i = 1; (i += amount.value); i += 1) {
+//     createPromise(i, stepValue)
+//       .then(({ position, delay }) => {
+//         Notify.success(`Fulfilled promise ${position} in ${delay}ms`);
+//       })
+//       .catch(({ position, delay }) => {
+//         Notify.failure(`Rejected promise ${position} in ${delay}ms`);
+//       });
+//     stepValue += Number(step.value);
+//   }
+
+//   event.currentTarget.reset();
+// }
